@@ -15,7 +15,7 @@ const GraphQl = {
 }
 
 const Aluno = {
-    //Criar aluno novo
+    //Prepara para criar aluno novo
     criar: function(novoAluno){
         const query = `
             mutation ($nomeCompleto: String!, $idade: Int!){
@@ -76,6 +76,37 @@ const Template ={
             html += `<li>Nome: ${aluno.nomeCompleto} - Idade: ${aluno.idade}`
         })
         listaAlunos.innerHTML = html;
+    },
+
+    //Pag:96: Criar aluno
+    criarAluno: function(){
+        /**
+         * O comportamento padrão de um formulário HTML submetido
+            é nos enviar para outra página, mas precisamos evitar isto, pois
+            nossa aplicação possui apenas uma única tela. Então temos que
+            executar event.preventDefault() .
+         */
+        event.preventDefault();
+        const formulario = document.forms.novoAluno,
+        novoAluno = {
+            nomeCompleto: formulario.nomeCompleto.value,
+            idade: parseInt(formulario.idade.value)
+        };
+        if(novoAluno.nomeCompleto && novoAluno.idade){
+            formulario.nomeCompleto.value = '';
+            formulario.idade.value = '';
+            Aluno.criar(novoAluno)
+                .then(({data: {createAluno}}) => {
+                    Template.inserirAlunoLista(createAluno);
+                })
+        }
+    },
+
+
+    //Pag.95: Inserir na lista
+    inserirAlunoLista: function(novoAluno){
+        Aluno.lista.push(novoAluno);
+        Template.listarAluno();
     }
 }
 
