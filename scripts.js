@@ -45,6 +45,22 @@ const Aluno = {
             }
         `;
         return GraphQl.exec(query);
+    },
+
+    //Pag 97: apagar aluno
+    apagar: function(id){
+        const query = `
+            mutation ($id: ID!){
+                deleteAluno(
+                    where: {
+                        id: $id
+                    }
+                ){
+                    id
+                }
+            }
+        `;
+        return GraphQl.exec(query, {id});
     }
 }
 
@@ -70,10 +86,13 @@ const Template ={
         listaAlunos.innerHTML = html;
     },
 
+     /**Adicionaremos um botão que, ao ser clicado, chamará a função
+    Template.apagarAluno() com o id do aluno a ser apagado. */
     listarAluno: function(){
         let html = ''
         Aluno.lista.forEach((aluno) => {
-            html += `<li>Nome: ${aluno.nomeCompleto} - Idade: ${aluno.idade}`
+            html += `<li>Nome: ${aluno.nomeCompleto} - Idade: ${aluno.idade} - <button onclick="Template.apagarAluno('${aluno.id}'
+            )" >X</button></li>`
         })
         listaAlunos.innerHTML = html;
     },
@@ -107,7 +126,32 @@ const Template ={
     inserirAlunoLista: function(novoAluno){
         Aluno.lista.push(novoAluno);
         Template.listarAluno();
-    }
+    },
+
+    //Pag 98, apagar da lista
+    removerAlunoLista: function(id){
+        const alunoIndice = Aluno.lista.findIndex(aluno => aluno.id === id);
+        if(alunoIndice >= 0){
+            Aluno.lista.splice(alunoIndice, 1);
+            Template.listarAluno();
+        }
+    },
+
+    /**
+     * Para não precisarmos ficar chamando uma função de cada vez
+    sempre que quisermos apagar um aluno, vamos criar uma função
+    que chame essas duas funções.
+     */
+    apagarAluno: function(id){
+        Aluno.apagar(id)
+            .then(()=> {
+                Template.removerAlunoLista(id)
+            })
+    },
+
+   
+
+
 }
 
 Template.iniciar();
