@@ -15,6 +15,24 @@ const GraphQl = {
 }
 
 const Aluno = {
+    //Criar aluno novo
+    criar: function(novoAluno){
+        const query = `
+            mutation ($nomeCompleto: String!, $idade: Int!){
+                createAluno(data: {
+                    nomeCompleto: $nomeCompleto
+                    idade: $idade
+                }){
+                    id
+                    nomeCompleto
+                    idade
+                }
+            }
+        `;
+        return GraphQl.exec(query, novoAluno);
+    },
+
+    //Listar alunos
     lista: [],
     buscar: function(){
         const query = `
