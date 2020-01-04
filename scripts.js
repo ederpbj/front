@@ -27,4 +27,3 @@ const Aluno = {
         return GraphQl.exec(query);
     }
 }
-
